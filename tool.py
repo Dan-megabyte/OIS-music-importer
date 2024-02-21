@@ -1,4 +1,5 @@
 import os
+import eyed3
 
 def writeMusicToFile(musiclist, musicfilepath):
     with open(musicfilepath, "wb") as file:
@@ -111,7 +112,16 @@ ds - delete specific music from file
     elif ipt == "t":
         for i in range(len(folderfiles)):
             filename = os.path.split(folderfiles[i][0])[1]
+            print(filename)
+            try:
+                absfilename=os.path.join(playlistFolderPath, folderfiles[i][0])
+                audiofile = eyed3.load(absfilename)
+                folderfiles[i][2] = audiofile.tag.title
+                folderfiles[i][1] = audiofile.tag.artist
+            except eyed3.Error as e:
+                print("Small error processing metadata {}".format(e))
             if folderfiles[i][2] == "":
+                #[filename, authorname, trackname]
                 folderfiles[i][2] = input("What is '" + filename + "' name?: ")
             if folderfiles[i][1] == "":
                 folderfiles[i][1] = input("What is '" + filename + "' author?: ")
